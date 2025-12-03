@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemáticas 2º ESO - Completa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 4px;
+        }
+        .fraction-numerator {
+            display: block;
+            padding: 0 8px;
+            border-bottom: 2px solid #000;
+        }
+        .fraction-denominator {
+            display: block;
+            padding: 0 8px;
+        }
+        .rule-of-three {
+            display: inline-block;
+            border-left: 3px solid #3b82f6;
+            padding-left: 12px;
+            margin: 8px 0;
+        }
+        .rule-of-three-row {
+            display: flex;
+            gap: 16px;
+            margin: 4px 0;
+            font-size: 1.1rem;
+        }
+        .hint-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+        }
+        .example-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-left: 4px solid #3b82f6;
+        }
+        .step-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid #10b981;
+        }
+        .visual-box {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            border-left: 4px solid #ec4899;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    
+    <script>
+        function frac(num, den) {
+            return `<span class="fraction"><span class="fraction-numerator">${num}</span><span class="fraction-denominator">${den}</span></span>`;
+        }
+
+        function ruleOfThree(lines) {
+            let html = '<div class="rule-of-three">';
+            lines.forEach(line => {
+                html += `<div class="rule-of-three-row"><span>${line[0]}</span><span>→</span><span>${line[1]}</span></div>`;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        const blocks = {
+            1: { 
+                title: "PROPORCIONALIDAD", 
+                subtitle: "Directa, inversa y compuesta", 
+                icon: "⚖️", 
+                color: "from-blue-500 to-blue-600",
+                explanation: "Aprende a resolver problemas de proporcionalidad simple y compuesta"
+            },
+            2: { 
+                title: "PORCENTAJES", 
+                subtitle: "Calcular, aumentar, disminuir", 
+                icon: "💯", 
+                color: "from-purple-500 to-purple-600",
+                explanation: "Domina los porcentajes: calcular precio final, inicial y porcentajes"
+            },
+            3: { 
+                title: "REPARTOS", 
+                subtitle: "Directos e inversos", 
+                icon: "🎂", 
+                color: "from-pink-500 to-pink-600",
+                explanation: "Aprende a repartir cantidades de forma proporcional"
+            },
+            4: { 
+                title: "PROBLEMAS DE FRACCIONES", 
+                subtitle: "Situaciones reales", 
+                icon: "🧮", 
+                color: "from-green-500 to-green-600",
+                explanation: "Resuelve problemas del día a día usando fracciones"
+            }
+        };
+
+        const levelExamples = {
+            "1-1": {
+                title: "Proporcionalidad COMPUESTA - DIRECTA + DIRECTA",
+                explanation: "Cuando las 3 magnitudes son directamente proporcionales: más de una → más de las otras",
+                example: {
+                    problem: "5 obreros construyen 20 metros de muro en 4 días. ¿Cuántos metros construirán 8 obreros en 6 días?",
+                    steps: [
+                        "1️⃣ IDENTIFICAR las relaciones:<br>• Más obreros → más metros (DIRECTA)<br>• Más días → más metros (DIRECTA)",
+                        `2️⃣ PLANTEAR:<br>${ruleOfThree([['5 obreros, 4 días', '20 m'], ['8 obreros, 6 días', '? m']])}`,
+                        "3️⃣ CALCULAR por partes:<br>• Efecto de más obreros: (8 ÷ 5) = 1,6<br>• Efecto de más días: (6 ÷ 4) = 1,5<br>• Total: 20 × 1,6 × 1,5 = 48 metros",
+                        "✅ RESPUESTA: 48 metros"
+                    ]
+                }
+            },
+            "1-2": {
+                title: "Proporcionalidad COMPUESTA - DIRECTA + INVERSA",
+                explanation: "Una magnitud es directa y otra inversa: más de una → más resultado, pero más de otra → menos resultado",
+                example: {
+                    problem: "6 grifos llenan un depósito en 4 horas. ¿Cuánto tardarán 8 grifos?",
+                    steps: [
+                        "1️⃣ IDENTIFICAR: Más grifos → menos tiempo (INVERSA)",
+                        `2️⃣ PLANTEAR:<br>${ruleOfThree([['6 grifos', '4 h'], ['8 grifos', '? h']])}`,
+                        "3️⃣ CALCULAR inversa: 6 × 4 = 8 × ?<br>24 ÷ 8 = 3 horas",
+                        "✅ RESPUESTA: 3 horas"
+                    ]
+                }
+            },
+            "2-1": {
+                title: "PORCENTAJES - Calcular PRECIO FINAL",
+                explanation: "Conocemos el precio inicial y el porcentaje de descuento/aumento",
+                example: {
+                    problem: "Una camisa de 40€ tiene un 25% de descuento. ¿Precio final?",
+                    steps: [
+                        "1️⃣ CALCULAR descuento: (25 × 40) ÷ 100 = 10 €",
+                        "2️⃣ RESTAR: 40 − 10 = 30 €",
+                        "✅ RESPUESTA: 30 euros"
+                    ]
+                }
+            },
+            "2-2": {
+                title: "PORCENTAJES - Calcular PRECIO INICIAL",
+                explanation: "Conocemos el precio final después del descuento/aumento y el porcentaje",
+                example: {
+                    problem: "Después de un 20% de descuento, pagué 80€. ¿Precio original?",
+                    steps: [
+                        "1️⃣ RAZONAR: Si 20% descuento → pagué el 80% del precio",
+                        "2️⃣ PLANTEAR: 80% del precio = 80 €<br>100% del precio = ?",
+                        "3️⃣ CALCULAR: (80 × 100) ÷ 80 = 100 €",
+                        "✅ RESPUESTA: 100 euros era el precio original"
+                    ]
+                }
+            },
+            "2-3": {
+                title: "PORCENTAJES - Calcular el PORCENTAJE",
+                explanation: "Conocemos el precio inicial y el final, queremos saber el % de descuento/aumento",
+                example: {
+                    problem: "Un artículo costaba 50€ y ahora cuesta 40€. ¿Qué % de descuento tiene?",
+                    steps: [
+                        "1️⃣ CALCULAR descuento: 50 − 40 = 10 €",
+                        "2️⃣ CALCULAR porcentaje: (10 ÷ 50) × 100 = 20%",
+                        "✅ RESPUESTA: 20% de descuento"
+                    ]
+                }
+            },
+            "3-1": {
+                title: "REPARTO DIRECTO",
+                explanation: "Repartir proporcionalmente a lo que cada uno aporta o merece",
+                example: {
+                    problem: "Ana aporta 200€, Berta 300€ y Carlos 500€. Reparten 600€ de beneficio. ¿Cuánto recibe cada uno?",
+                    steps: [
+                        "1️⃣ SUMAR aportaciones: 200 + 300 + 500 = 1000 €",
+                        "2️⃣ CALCULAR valor de cada euro: 600 ÷ 1000 = 0,6 € por cada euro aportado",
+                        "3️⃣ CALCULAR para cada persona:<br>• Ana: 200 × 0,6 = 120 €<br>• Berta: 300 × 0,6 = 180 €<br>• Carlos: 500 × 0,6 = 300 €",
+                        "4️⃣ COMPROBAR: 120 + 180 + 300 = 600 € ✓",
+                        "✅ RESPUESTA: Ana 120€, Berta 180€, Carlos 300€"
+                    ]
+                }
+            },
+            "3-2": {
+                title: "REPARTO INVERSO",
+                explanation: "Repartir inversamente proporcional: quien tiene menos número, recibe más cantidad",
+                example: {
+                    problem: "Repartir 240€ inversamente a 2, 3 y 4. ¿Cuánto recibe cada uno?",
+                    steps: [
+                        "1️⃣ CALCULAR inversos: 1/2, 1/3, 1/4",
+                        "2️⃣ SUMAR inversos: 1/2 + 1/3 + 1/4 = 6/12 + 4/12 + 3/12 = 13/12",
+                        "3️⃣ CALCULAR reparto:<br>• Primero: 240 × (1/2) ÷ (13/12) = 110,77 €<br>• Segundo: 240 × (1/3) ÷ (13/12) = 73,85 €<br>• Tercero: 240 × (1/4) ÷ (13/12) = 55,38 €",
+                        "✅ Método fácil: quien tiene 2 recibe MÁS que quien tiene 4"
+                    ]
+                }
+            },
+            "4-1": {
+                title: "PROBLEMAS DE FRACCIONES - Tipo 'gasto y queda'",
+                explanation: "Problemas donde gastas fracciones sucesivamente y te sobra una cantidad",
+                example: {
+                    problem: `El viernes gasto ${frac('1','5')} de mi dinero. El sábado gasto ${frac('3','4')} de lo que me queda. Si al final me sobran 6€, ¿cuánto tenía al principio?`,
+                    steps: [
+                        `1️⃣ REPRESENTAR: Llamo X a mi dinero inicial`,
+                        `2️⃣ DESPUÉS DEL VIERNES:<br>Gasto ${frac('1','5')} de X → Me quedan ${frac('4','5')} de X`,
+                        `3️⃣ DESPUÉS DEL SÁBADO:<br>Gasto ${frac('3','4')} de lo que queda → Gasto ${frac('3','4')} × ${frac('4','5')}X = ${frac('3','5')}X<br>Me queda: ${frac('4','5')}X − ${frac('3','5')}X = ${frac('1','5')}X`,
+                        `4️⃣ ECUACIÓN: ${frac('1','5')}X = 6 €`,
+                        "5️⃣ RESOLVER: X = 6 × 5 = 30 €",
+                        "✅ RESPUESTA: Tenía 30 euros al principio"
+                    ]
+                }
+            }
+        };
+
+        const exerciseData = {
+            "1-1": [
+                { 
+                    q: "6 máquinas fabrican 120 piezas en 5 horas. ¿Cuántas piezas fabricarán 9 máquinas en 8 horas?",
+                    a: "288",
+                    sol: "Ambas DIRECTAS:<br>Más máquinas → más piezas: (9÷6) = 1,5<br>Más horas → más piezas: (8÷5) = 1,6<br>Total: 120 × 1,5 × 1,6 = <strong>288 piezas</strong>",
+                    hint: "💡 Multiplica por el efecto de más máquinas Y más horas"
+                },
+                { 
+                    q: "4 pintores pintan 80 m² en 3 días. ¿Cuántos m² pintarán 6 pintores en 5 días?",
+                    a: "200",
+                    sol: "Ambas DIRECTAS:<br>Más pintores: (6÷4) = 1,5<br>Más días: (5÷3) = 1,667<br>Total: 80 × 1,5 × 1,667 = <strong>200 m²</strong>",
+                    hint: "💡 Más pintores y más días → más metros. Multiplica ambos efectos"
+                },
+                { 
+                    q: "5 grifos llenan 200 litros en 4 minutos. ¿Cuántos litros llenan 8 grifos en 6 minutos?",
+                    a: "480",
+                    sol: "Ambas DIRECTAS:<br>Más grifos: (8÷5) = 1,6<br>Más minutos: (6÷4) = 1,5<br>Total: 200 × 1,6 × 1,5 = <strong>480 litros</strong>",
+                    hint: "💡 Calcula (8÷5) × (6÷4) × 200"
+                }
+            ],
+            "1-2": [
+                { 
+                    q: "6 obreros construyen un muro en 12 días trabajando 8 horas diarias. ¿Cuántos días tardarán 8 obreros trabajando 6 horas diarias?",
+                    a: "12",
+                    sol: "INVERSA (obreros) + INVERSA (horas):<br>Más obreros → menos días: (6÷8) = 0,75<br>Menos horas → más días: (8÷6) = 1,333<br>Total: 12 × 0,75 × 1,333 = <strong>12 días</strong>",
+                    hint: "💡 Más obreros = menos días (inversa). Menos horas = más días (inversa)"
+                },
+                { 
+                    q: "3 grifos llenan un depósito en 10 horas. ¿Cuánto tardarán 5 grifos?",
+                    a: "6",
+                    sol: "INVERSA:<br>3 × 10 = 5 × ?<br>30 ÷ 5 = <strong>6 horas</strong>",
+                    hint: "💡 Más grifos → menos tiempo. Usa: 3×10 = 5×?"
+                }
+            ],
+            "2-1": [
+                { 
+                    q: "Un televisor cuesta 500€. Le aplican un 15% de descuento. ¿Precio final?",
+                    a: "425",
+                    sol: "Descuento: (15 × 500) ÷ 100 = 75 €<br>Precio final: 500 − 75 = <strong>425 €</strong>",
+                    hint: "💡 Calcula 15% de 500 y réstalo"
+                },
+                { 
+                    q: "Un salario de 1200€ sube un 8%. ¿Nuevo salario?",
+                    a: "1296",
+                    sol: "Aumento: (8 × 1200) ÷ 100 = 96 €<br>Nuevo salario: 1200 + 96 = <strong>1296 €</strong>",
+                    hint: "💡 Calcula 8% de 1200 y súmalo"
+                },
+                { 
+                    q: "Unas zapatillas de 80€ se rebajan un 35%. ¿Precio rebajado?",
+                    a: "52",
+                    sol: "Descuento: (35 × 80) ÷ 100 = 28 €<br>Precio final: 80 − 28 = <strong>52 €</strong>",
+                    hint: "💡 35% de 80 = 28, luego 80 − 28"
+                }
+            ],
+            "2-2": [
+                { 
+                    q: "Después de un 20% de descuento, pagué 120€. ¿Precio original?",
+                    a: "150",
+                    sol: "Si 20% descuento → pagué 80% del precio<br>80% = 120 €<br>100% = (120 × 100) ÷ 80 = <strong>150 €</strong>",
+                    hint: "💡 Si pagaste 80% (porque 20% descuento), entonces 120 es el 80%"
+                },
+                { 
+                    q: "Con un 25% de aumento, ahora gano 1500€. ¿Cuánto ganaba antes?",
+                    a: "1200",
+                    sol: "Si 25% aumento → ahora tengo 125% del original<br>125% = 1500 €<br>100% = (1500 × 100) ÷ 125 = <strong>1200 €</strong>",
+                    hint: "💡 1500 es el 125% (original + 25% aumento)"
+                },
+                { 
+                    q: "Tras un 15% de descuento, compré una bici por 340€. ¿Precio sin descuento?",
+                    a: "400",
+                    sol: "Pagué 85% del precio (100% − 15%)<br>85% = 340 €<br>100% = (340 × 100) ÷ 85 = <strong>400 €</strong>",
+                    hint: "💡 340 es el 85% del precio original"
+                }
+            ],
+            "2-3": [
+                { 
+                    q: "Un artículo costaba 200€ y ahora cuesta 160€. ¿Qué % de descuento?",
+                    a: "20",
+                    sol: "Descuento: 200 − 160 = 40 €<br>Porcentaje: (40 ÷ 200) × 100 = <strong>20%</strong>",
+                    hint: "💡 Calcula cuánto bajó, luego divídelo entre el precio original y multiplica por 100"
+                },
+                { 
+                    q: "Mi sueldo era 1000€ y ahora es 1100€. ¿Qué % subió?",
+                    a: "10",
+                    sol: "Aumento: 1100 − 1000 = 100 €<br>Porcentaje: (100 ÷ 1000) × 100 = <strong>10%</strong>",
+                    hint: "💡 Diferencia: 100€. Porcentaje: (100÷1000)×100"
+                },
+                { 
+                    q: "Compré algo por 90€ y lo vendí por 108€. ¿Qué % gané?",
+                    a: "20",
+                    sol: "Ganancia: 108 − 90 = 18 €<br>Porcentaje: (18 ÷ 90) × 100 = <strong>20%</strong>",
+                    hint: "💡 Ganaste 18€ sobre 90€"
+                }
+            ],
+            "3-1": [
+                { 
+                    q: "Tres amigos montan un negocio. Ana pone 300€, Berta 500€ y Carlos 700€. Si ganan 900€, ¿cuánto recibe cada uno?",
+                    a: "180,300,420",
+                    sol: "Total: 300+500+700 = 1500 €<br>Valor: 900÷1500 = 0,6 €/€<br>Ana: 300×0,6 = <strong>180€</strong><br>Berta: 500×0,6 = <strong>300€</strong><br>Carlos: 700×0,6 = <strong>420€</strong>",
+                    hint: "💡 Suma todas las aportaciones, luego reparte proporcionalmente"
+                },
+                { 
+                    q: "Dos hermanos heredan 15000€ proporcionalmente a sus edades: 20 y 30 años. ¿Cuánto recibe cada uno?",
+                    a: "6000,9000",
+                    sol: "Total edades: 20+30 = 50 años<br>Valor: 15000÷50 = 300 €/año<br>Primero: 20×300 = <strong>6000€</strong><br>Segundo: 30×300 = <strong>9000€</strong>",
+                    hint: "💡 Suma las edades (50), divide 15000 entre 50"
+                },
+                { 
+                    q: "Repartir 480€ entre 3 personas proporcionalmente a 2, 3 y 5. ¿Cuánto recibe cada una?",
+                    a: "96,144,240",
+                    sol: "Total partes: 2+3+5 = 10<br>Valor: 480÷10 = 48 €/parte<br>Primera: 2×48 = <strong>96€</strong><br>Segunda: 3×48 = <strong>144€</strong><br>Tercera: 5×48 = <strong>240€</strong>",
+                    hint: "💡 Suma 2+3+5=10, luego 480÷10=48 por cada parte"
+                }
+            ],
+            "3-2": [
+                { 
+                    q: "Repartir 120€ inversamente proporcional a 2, 3 y 4. ¿Cuánto recibe cada uno? (quien tiene menor número recibe MÁS)",
+                    a: "60,40,30",
+                    sol: "Inversos: 1/2, 1/3, 1/4 → Equivale a repartir directamente por 6, 4, 3<br>Total: 6+4+3 = 13<br>Primero: (6÷13)×120 = <strong>55€</strong><br>Segundo: (4÷13)×120 = <strong>37€</strong><br>Tercero: (3÷13)×120 = <strong>28€</strong>",
+                    hint: "💡 Inverso: quien tiene 2 recibe como si tuviera 1/2"
+                }
+            ],
+            "4-1": [
+                { 
+                    q: `Gasto ${frac('1','4')} de mi dinero en comida y ${frac('2','3')} de lo que queda en transporte. Me sobran 9€. ¿Cuánto tenía?`,
+                    a: "36",
+                    sol: `Después de comida: me quedan ${frac('3','4')}X<br>Gasto en transporte: ${frac('2','3')} × ${frac('3','4')}X = ${frac('1','2')}X<br>Me queda: ${frac('3','4')}X − ${frac('1','2')}X = ${frac('1','4')}X<br>Ecuación: ${frac('1','4')}X = 9<br>X = 9×4 = <strong>36€</strong>`,
+                    hint: `💡 Si gastas 1/4, te queda 3/4. Si gastas 2/3 de eso... ve paso a paso`
+                },
+                { 
+                    q: `El lunes gasto ${frac('1','3')} de mi dinero. El martes ${frac('1','2')} de lo que me queda. Si me sobran 20€, ¿cuánto tenía al principio?`,
+                    a: "60",
+                    sol: `Después del lunes: ${frac('2','3')}X<br>Gasto el martes: ${frac('1','2')} × ${frac('2','3')}X = ${frac('1','3')}X<br>Me queda: ${frac('2','3')}X − ${frac('1','3')}X = ${frac('1','3')}X<br>${frac('1','3')}X = 20<br>X = 20×3 = <strong>60€</strong>`,
+                    hint: "💡 Después del lunes te queda 2/3. El martes gastas 1/2 de eso"
+                },
+                { 
+                    q: `Un depósito pierde ${frac('1','5')} de su agua por evaporación. Luego se consumen ${frac('3','4')} de lo que queda. Quedan 40 litros. ¿Capacidad inicial?`,
+                    a: "200",
+                    sol: `Después de evaporación: ${frac('4','5')}X<br>Se consumen: ${frac('3','4')} × ${frac('4','5')}X = ${frac('3','5')}X<br>Quedan: ${frac('4','5')}X − ${frac('3','5')}X = ${frac('1','5')}X<br>${frac('1','5')}X = 40<br>X = 40×5 = <strong>200 litros</strong>`,
+                    hint: "💡 Pierde 1/5 → queda 4/5. Consume 3/4 de eso..."
+                }
+            ],
+            "4-2": [
+                { 
+                    q: `En una clase, ${frac('2','5')} son chicas. De las chicas, ${frac('3','4')} llevan gafas. Si 12 chicas llevan gafas, ¿cuántos alumnos hay en total?`,
+                    a: "40",
+                    sol: `Chicas con gafas = ${frac('3','4')} × ${frac('2','5')}X = ${frac('3','10')}X<br>Ecuación: ${frac('3','10')}X = 12<br>X = 12 × ${frac('10','3')} = <strong>40 alumnos</strong>`,
+                    hint: "💡 Las chicas con gafas son 3/4 de 2/5 del total"
+                },
+                { 
+                    q: `Leo ${frac('1','3')} de un libro el primer día y ${frac('1','4')} del libro el segundo día. Me faltan 100 páginas. ¿Cuántas páginas tiene el libro?`,
+                    a: "240",
+                    sol: `Leo en total: ${frac('1','3')} + ${frac('1','4')} = ${frac('7','12')}X<br>Me falta: X − ${frac('7','12'}}X = ${frac('5','12'}}X<br>${frac('5','12'}}X = 100<br>X = 100 × ${frac('12','5'}} = <strong>240 páginas</strong>`,
+                    hint: "💡 Suma lo que leíste, lo que falta es el resto"
+                },
+                { 
+                    q: `Pedro tiene el triple que Ana. María tiene ${frac('2','3')} de lo que tiene Pedro. Entre los tres tienen 180€. ¿Cuánto tiene cada uno?`,
+                    a: "30,90,60",
+                    sol: `Ana = X<br>Pedro = 3X<br>María = ${frac('2','3'}}×3X = 2X<br>Total: X + 3X + 2X = 6X = 180<br>X = 30<br>Ana: <strong>30€</strong>, Pedro: <strong>90€</strong>, María: <strong>60€</strong>`,
+                    hint: "💡 Llama X a lo que tiene Ana, Pedro tiene 3X..."
+                }
+            ]
+        };
+
+        const state = {
+            selectedBlock: null,
+            selectedLevel: null,
+            answers: {},
+            showResults: {},
+            showHints: {},
+            showExample: false,
+            statistics: JSON.parse(localStorage.getItem('mathStats2') || '{}')
+        };
+
+        function saveState() {
+            localStorage.setItem('mathStats2', JSON.stringify(state.statistics));
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase().replace(/\s/g, '').replace(/,/g, '.').replace(/€/g, '').replace(/euros/g, '');
+        }
+
+        function checkAnswer(key, correct) {
+            const userAnswer = normalizeAnswer(state.answers[key] || '');
+            const correctAnswer = normalizeAnswer(correct);
+            const isCorrect = userAnswer === correctAnswer;
+            
+            state.showResults[key] = { correct: isCorrect };
+            
+            const parts = key.split('-');
+            const statKey = parts[0] + '-' + parts[1];
+            
+            if (!state.statistics[statKey]) state.statistics[statKey] = { total: 0, correct: 0 };
+            state.statistics[statKey].total++;
+            if (isCorrect) state.statistics[statKey].correct++;
+            saveState();
+            render();
+        }
+
+        function toggleHint(key) {
+            state.showHints[key] = !state.showHints[key];
+            render();
+        }
+
+        function toggleExample() {
+            state.showExample = !state.showExample;
+            render();
+        }
+
+        function generateReport() {
+            let totalExercises = 0, totalCorrect = 0;
+            Object.entries(state.statistics).forEach(([key, stats]) => {
+                totalExercises += stats.total;
+                totalCorrect += stats.correct;
+            });
+            const percentage = totalExercises > 0 ? ((totalCorrect / totalExercises) * 100).toFixed(1) : 0;
+            return { totalExercises, totalCorrect, percentage };
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            const report = generateReport();
+            
+            app.innerHTML = `<div class="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 p-4">
+                <div class="max-w-7xl mx-auto">
+                    ${renderHeader(report)}
+                    ${renderContent()}
+                </div></div>`;
+        }
+
+        function renderHeader(report) {
+            return `<div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-2xl p-8 mb-8 text-white">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="text-6xl">📚</div>
+                        <div>
+                            <h1 class="text-4xl font-bold mb-2">Matemáticas 2º ESO</h1>
+                            <p class="text-blue-100 text-xl">Versión Completa - Todos los Tipos ✨</p>
+                        </div>
+                    </div>
+                    ${(state.selectedBlock || state.selectedLevel) ? '<button onclick="goHome()" class="bg-white text-blue-600 px-6 py-3 rounded-xl hover:bg-blue-50 transition shadow-lg font-bold text-lg">🏠 Volver</button>' : ''}
+                </div>
+                ${report.totalExercises > 0 ? `<div class="flex gap-4 mt-6 flex-wrap">
+                    <div class="bg-green-500 px-6 py-3 rounded-xl shadow-lg">
+                        <span class="font-bold text-lg">✅ ${report.totalCorrect}/${report.totalExercises}</span>
+                    </div>
+                    <div class="bg-yellow-400 px-6 py-3 rounded-xl shadow-lg">
+                        <span class="font-bold text-lg text-gray-800">📊 ${report.percentage}%</span>
+                    </div>
+                </div>` : ''}
+            </div>`;
+        }
+
+        function renderContent() {
+            if (!state.selectedBlock) return renderBlockSelection();
+            else if (!state.selectedLevel) return renderLevelSelection();
+            else return renderExercises();
+        }
+
+        function renderBlockSelection() {
+            return `<div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🎯 Elige un Tema</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    ${Object.entries(blocks).map(([id, block]) => `<div onclick="selectBlock('${id}')" class="bg-gradient-to-br ${block.color} rounded-3xl shadow-xl p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 text-white">
+                        <div class="text-6xl mb-4">${block.icon}</div>
+                        <h3 class="font-bold text-2xl mb-2">${block.title}</h3>
+                        <p class="text-white text-opacity-90 text-lg mb-4">${block.subtitle}</p>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-3 mb-4">
+                            <p class="text-sm">${block.explanation}</p>
+                        </div>
+                        <div class="flex items-center text-white font-bold text-lg">Empezar →</div>
+                    </div>`).join('')}
+                </div></div>`;
+        }
+
+        function renderLevelSelection() {
+            const block = blocks[state.selectedBlock];
+            const levelKey = state.selectedBlock + '-1';
+            const example = levelExamples[levelKey];
+            
+            const levelNames = {
+                '1': ['Nivel 1: Compuesta Directa 🟢', 'Nivel 2: Compuesta Mixta 🟡'],
+                '2': ['Nivel 1: Precio Final 🟢', 'Nivel 2: Precio Inicial 🟡', 'Nivel 3: Calcular % 🔴'],
+                '3': ['Nivel 1: Reparto Directo 🟢', 'Nivel 2: Reparto Inverso 🔴'],
+                '4': ['Nivel 1: Gasto y Queda 🟢', 'Nivel 2: Combinados 🟡']
+            };
+            
+            return `<div>
+                <button onclick="backToBlocks()" class="mb-6 px-8 py-4 bg-white rounded-xl hover:bg-gray-50 transition shadow-lg font-bold text-lg">← Volver</button>
+                
+                <div class="bg-gradient-to-r ${block.color} rounded-3xl shadow-xl p-8 mb-8 text-white">
+                    <div class="text-6xl mb-4">${block.icon}</div>
+                    <h2 class="text-4xl font-bold mb-3">${block.title}</h2>
+                    <p class="text-xl text-white text-opacity-90">${block.explanation}</p>
+                </div>
+
+                ${example ? `<div class="example-box rounded-2xl p-8 mb-8 shadow-xl">
+                    <h3 class="font-bold text-2xl text-blue-900 mb-4">💡 ${example.title}</h3>
+                    <p class="text-blue-800 text-lg mb-4">${example.explanation}</p>
+                    <div class="bg-white rounded-xl p-6">
+                        <p class="font-bold text-xl mb-4">📝 ${example.example.problem}</p>
+                        <div class="space-y-3">
+                            ${example.example.steps.map(step => `<div class="step-box rounded-lg p-3"><p class="font-medium text-lg">${step}</p></div>`).join('')}
+                        </div>
+                    </div>
+                </div>` : ''}
+
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Elige un Nivel:</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    ${(levelNames[state.selectedBlock] || []).map((levelName, idx) => {
+                        const levelId = String(idx + 1);
+                        const stats = state.statistics[state.selectedBlock + '-' + levelId] || { total: 0, correct: 0 };
+                        return `<div onclick="selectLevel('${levelId}')" class="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition-all border-4 border-transparent hover:border-blue-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="bg-gradient-to-r ${block.color} text-white px-6 py-2 rounded-full font-bold text-lg">
+                                    ${levelName}
+                                </span>
+                                ${stats.total > 0 ? `<span class="text-lg font-bold text-green-600">${stats.correct}/${stats.total} ✓</span>` : ''}
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div></div>`;
+        }
+
+        function renderExercises() {
+            const exercises = exerciseData[`${state.selectedBlock}-${state.selectedLevel}`] || [];
+            const levelKey = state.selectedBlock + '-' + state.selectedLevel;
+            const example = levelExamples[levelKey];
+            
+            return `<div>
+                <div class="flex gap-3 mb-6 flex-wrap">
+                    <button onclick="backToLevels()" class="px-6 py-3 bg-white rounded-xl shadow-lg hover:bg-gray-50 transition font-bold">← Niveles</button>
+                    <button onclick="goHome()" class="px-6 py-3 bg-white rounded-xl shadow-lg hover:bg-gray-50 transition font-bold">🏠 Inicio</button>
+                    ${example ? `<button onclick="toggleExample()" class="px-6 py-3 bg-blue-500 text-white rounded-xl shadow-lg hover:bg-blue-600 transition font-bold">
+                        ${state.showExample ? '🙈 Ocultar' : '💡 Ver'} Ejemplo
+                    </button>` : ''}
+                </div>
+
+                ${state.showExample && example ? `<div class="example-box rounded-2xl p-8 mb-8 shadow-xl">
+                    <h3 class="font-bold text-2xl text-blue-900 mb-4">💡 ${example.title}</h3>
+                    <p class="text-blue-800 text-lg mb-4">${example.explanation}</p>
+                    <div class="bg-white rounded-xl p-6">
+                        <p class="font-bold text-xl mb-4">📝 ${example.example.problem}</p>
+                        <div class="space-y-3">
+                            ${example.example.steps.map(step => `<div class="step-box rounded-lg p-3"><p class="font-medium text-lg">${step}</p></div>`).join('')}
+                        </div>
+                    </div>
+                </div>` : ''}
+
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">📚 Ejercicios</h2>
+                </div>
+
+                <div class="space-y-8">
+                    ${exercises.map((ex, idx) => {
+                        const key = `${state.selectedBlock}-${state.selectedLevel}-${idx}`;
+                        const result = state.showResults[key];
+                        const showHint = state.showHints[key];
+                        return `<div class="bg-white border-4 ${result?.correct ? 'border-green-300' : 'border-gray-200'} rounded-2xl p-8 shadow-xl">
+                            <div class="flex items-start gap-4">
+                                <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-bold text-xl min-w-fit">
+                                    ${idx + 1}
+                                </span>
+                                <div class="flex-1">
+                                    <div class="text-2xl font-bold text-gray-800 mb-6 leading-relaxed">${ex.q}</div>
+                                    
+                                    <div class="flex gap-3 mb-4">
+                                        <input type="text" oninput="updateAnswer('${key}', this.value)" placeholder="Tu respuesta" 
+                                            class="flex-1 px-6 py-4 border-4 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none text-xl font-bold"
+                                            ${result ? 'disabled' : ''}>
+                                        <button onclick="checkAnswer('${key}', '${ex.a}')" 
+                                            class="px-10 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition font-bold text-xl shadow-lg"
+                                            ${result ? 'disabled style="opacity: 0.5;"' : ''}>
+                                            ✓ Comprobar
+                                        </button>
+                                    </div>
+
+                                    ${!result ? `<button onclick="toggleHint('${key}')" class="px-6 py-3 bg-yellow-400 text-gray-800 rounded-xl hover:bg-yellow-500 transition font-bold mb-4">
+                                        ${showHint ? '🙈 Ocultar' : '💡 Ver'} Pista
+                                    </button>` : ''}
+
+                                    ${showHint && !result ? `<div class="hint-box rounded-xl p-6 mb-4">
+                                        <p class="font-bold text-lg text-yellow-900">${ex.hint}</p>
+                                    </div>` : ''}
+
+                                    ${result ? `<div class="mt-6 p-6 rounded-2xl ${result.correct ? 'bg-green-50 border-4 border-green-300' : 'bg-red-50 border-4 border-red-300'}">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <span class="text-4xl">${result.correct ? '🎉' : '❌'}</span>
+                                            <span class="font-bold text-2xl ${result.correct ? 'text-green-800' : 'text-red-800'}">
+                                                ${result.correct ? '¡CORRECTO!' : 'Aprende:'}
+                                            </span>
+                                        </div>
+                                        <div class="bg-white rounded-xl p-6">
+                                            <p class="font-bold text-lg text-gray-800 mb-2">📖 SOLUCIÓN:</p>
+                                            <p class="text-xl text-gray-700 leading-relaxed">${ex.sol}</p>
+                                        </div>
+                                    </div>` : ''}
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+        }
+
+        window.selectBlock = id => { state.selectedBlock = id; state.showExample = false; render(); };
+        window.selectLevel = id => { state.selectedLevel = id; state.showExample = false; render(); };
+        window.backToBlocks = () => { state.selectedBlock = null; state.selectedLevel = null; state.showExample = false; render(); };
+        window.backToLevels = () => { state.selectedLevel = null; state.showExample = false; render(); };
+        window.goHome = () => { state.selectedBlock = null; state.selectedLevel = null; state.showExample = false; render(); };
+        window.updateAnswer = (key, value) => { state.answers[key] = value; };
+        window.checkAnswer = checkAnswer;
+        window.toggleHint = toggleHint;
+        window.toggleExample = toggleExample;
+
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>
