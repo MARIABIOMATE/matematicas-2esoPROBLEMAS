@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemáticas 2º ESO - Práctica Interactiva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 4px;
+        }
+        .fraction-numerator {
+            display: block;
+            padding: 0 8px;
+            border-bottom: 2px solid #000;
+        }
+        .fraction-denominator {
+            display: block;
+            padding: 0 8px;
+        }
+        .rule-of-three {
+            display: inline-block;
+            border-left: 3px solid #3b82f6;
+            padding-left: 12px;
+            margin: 8px 0;
+        }
+        .rule-of-three-row {
+            display: flex;
+            gap: 16px;
+            margin: 4px 0;
+            font-size: 1.1rem;
+        }
+        .hint-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+        }
+        .example-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-left: 4px solid #3b82f6;
+        }
+        .step-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    
+    <script>
+        // Función para crear fracciones HTML
+        function frac(num, den) {
+            return `<span class="fraction"><span class="fraction-numerator">${num}</span><span class="fraction-denominator">${den}</span></span>`;
+        }
+
+        // Función para crear regla de tres
+        function ruleOfThree(lines) {
+            let html = '<div class="rule-of-three">';
+            lines.forEach(line => {
+                html += `<div class="rule-of-three-row"><span>${line[0]}</span><span>→</span><span>${line[1]}</span></div>`;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        const blocks = {
+            1: { 
+                title: "PROPORCIONALIDAD", 
+                subtitle: "Regla de tres directa e inversa", 
+                icon: "⚖️", 
+                color: "from-blue-500 to-blue-600",
+                explanation: "La proporcionalidad nos ayuda a resolver problemas donde hay relaciones entre cantidades. Por ejemplo: si 2 kilos cuestan 4 euros, ¿cuánto costarán 5 kilos?"
+            },
+            2: { 
+                title: "PORCENTAJES", 
+                subtitle: "Calcular, aumentar y disminuir", 
+                icon: "💯", 
+                color: "from-purple-500 to-purple-600",
+                explanation: "Los porcentajes son partes de 100. El 25% significa 25 de cada 100. Para calcular: (porcentaje × cantidad) ÷ 100"
+            },
+            3: { 
+                title: "FRACCIONES", 
+                subtitle: "Sumar, restar, multiplicar y dividir", 
+                icon: "➗", 
+                color: "from-pink-500 to-pink-600",
+                explanation: "Las fracciones son partes de un entero. Para sumar fracciones necesitas el mismo denominador."
+            },
+            4: { 
+                title: "POTENCIAS", 
+                subtitle: "Multiplicar números iguales", 
+                icon: "²", 
+                color: "from-green-500 to-green-600",
+                explanation: "Las potencias son multiplicaciones repetidas: 2³ = 2×2×2 = 8"
+            }
+        };
+
+        const levelExamples = {
+            "1-1": {
+                title: "Proporcionalidad DIRECTA",
+                explanation: "Cuando una cantidad aumenta, la otra también aumenta en la misma proporción.",
+                example: {
+                    problem: "Si 3 kg de manzanas cuestan 6 €, ¿cuánto costarán 5 kg?",
+                    steps: [
+                        "1️⃣ IDENTIFICAR: Más kilos → más dinero (DIRECTA)",
+                        `2️⃣ ESCRIBIR LA PROPORCIÓN:<br>${ruleOfThree([['3 kg', '6 €'], ['5 kg', '? €']])}`,
+                        "3️⃣ REGLA DE TRES: (5 × 6) ÷ 3 = 30 ÷ 3 = 10 €",
+                        "✅ RESPUESTA: 10 euros"
+                    ]
+                }
+            },
+            "1-2": {
+                title: "Proporcionalidad INVERSA",
+                explanation: "Cuando una cantidad aumenta, la otra disminuye en la misma proporción.",
+                example: {
+                    problem: "Si 4 obreros tardan 12 días, ¿cuánto tardarán 6 obreros?",
+                    steps: [
+                        "1️⃣ IDENTIFICAR: Más obreros → menos días (INVERSA)",
+                        `2️⃣ ESCRIBIR LA PROPORCIÓN:<br>${ruleOfThree([['4 obreros', '12 días'], ['6 obreros', '? días']])}`,
+                        "3️⃣ MULTIPLICAR: 4 × 12 = 6 × ?",
+                        "4️⃣ CALCULAR: 48 ÷ 6 = 8 días",
+                        "✅ RESPUESTA: 8 días"
+                    ]
+                }
+            },
+            "2-1": {
+                title: "CALCULAR un porcentaje",
+                explanation: "Para calcular el % de una cantidad: (porcentaje × cantidad) ÷ 100",
+                example: {
+                    problem: "¿Cuánto es el 25% de 80?",
+                    steps: [
+                        "1️⃣ FÓRMULA: (25 × 80) ÷ 100",
+                        "2️⃣ MULTIPLICAR: 25 × 80 = 2000",
+                        "3️⃣ DIVIDIR: 2000 ÷ 100 = 20",
+                        "✅ RESPUESTA: 20"
+                    ]
+                }
+            },
+            "2-2": {
+                title: "DESCUENTOS",
+                explanation: "Descuento: calcula el % y réstalo del precio original.",
+                example: {
+                    problem: "Una camisa de 40€ tiene un 20% de descuento. ¿Precio final?",
+                    steps: [
+                        "1️⃣ CALCULAR DESCUENTO: (20 × 40) ÷ 100 = 8 €",
+                        "2️⃣ RESTAR DEL PRECIO: 40 − 8 = 32 €",
+                        "✅ RESPUESTA: 32 euros"
+                    ]
+                }
+            },
+            "3-1": {
+                title: "SUMAR fracciones",
+                explanation: "Para sumar fracciones: 1) Busca denominador común 2) Ajusta numeradores 3) Suma",
+                example: {
+                    problem: `Calcula: ${frac('1','2')} + ${frac('1','3')}`,
+                    steps: [
+                        "1️⃣ DENOMINADOR COMÚN: 6 (mínimo común múltiplo de 2 y 3)",
+                        `2️⃣ CONVERTIR: ${frac('1','2')} = ${frac('3','6')} y ${frac('1','3')} = ${frac('2','6')}`,
+                        `3️⃣ SUMAR: ${frac('3','6')} + ${frac('2','6')} = ${frac('5','6')}`,
+                        `✅ RESPUESTA: ${frac('5','6')}`
+                    ]
+                }
+            },
+            "4-1": {
+                title: "MULTIPLICAR potencias (misma base)",
+                explanation: "Cuando multiplicas potencias de la misma base, SUMAS los exponentes.",
+                example: {
+                    problem: "Calcula: 2³ × 2⁴",
+                    steps: [
+                        "1️⃣ MISMA BASE (2): sumamos exponentes",
+                        "2️⃣ SUMAR: 3 + 4 = 7",
+                        "3️⃣ RESULTADO: 2⁷ = 128",
+                        "✅ RESPUESTA: 128"
+                    ]
+                }
+            }
+        };
+
+        const exerciseData = {
+            "1-1": [
+                { 
+                    q: "Una fuente arroja 240 litros en 8 minutos. ¿Cuántos litros arroja en 30 minutos?", 
+                    a: "900", 
+                    sol: `DIRECTA:<br>${ruleOfThree([['8 min', '240 L'], ['30 min', '? L']])}<br>(240 × 30) ÷ 8 = 7200 ÷ 8 = <strong>900 litros</strong>`,
+                    hint: "💡 Más tiempo → más agua (directa). Multiplica 240 por 30 y divide entre 8"
+                },
+                { 
+                    q: "Si 3 kg de naranjas cuestan 4,50 €, ¿cuánto costarán 5 kg?", 
+                    a: "7.5", 
+                    sol: `DIRECTA:<br>${ruleOfThree([['3 kg', '4,50 €'], ['5 kg', '? €']])}<br>(4,50 × 5) ÷ 3 = 22,5 ÷ 3 = <strong>7,50 €</strong>`,
+                    hint: "💡 Más kilos → más dinero (directa). Haz: (4,50 × 5) ÷ 3"
+                },
+                { 
+                    q: "Por 750 gramos de ternera Ana pagó 9 €. ¿Cuánto pagará por 1 kg (1000 gramos)?", 
+                    a: "12", 
+                    sol: `DIRECTA:<br>${ruleOfThree([['750 g', '9 €'], ['1000 g', '? €']])}<br>(9 × 1000) ÷ 750 = 9000 ÷ 750 = <strong>12 €</strong>`,
+                    hint: "💡 Más peso → más dinero. Multiplica 9 por 1000 y divide entre 750"
+                }
+            ],
+            "1-2": [
+                { 
+                    q: "8 grifos vacían un depósito en 40 minutos. ¿Cuánto tardan 5 grifos?", 
+                    a: "64", 
+                    sol: `INVERSA:<br>${ruleOfThree([['8 grifos', '40 min'], ['5 grifos', '? min']])}<br>Menos grifos → más tiempo<br>8 × 40 = 5 × ?<br>320 ÷ 5 = <strong>64 minutos</strong>`,
+                    hint: "💡 Menos grifos → más tiempo (inversa). Haz: (8 × 40) ÷ 5"
+                },
+                { 
+                    q: "Un coche a 80 km/h tarda 5 horas. ¿Cuánto tarda a 100 km/h?", 
+                    a: "4", 
+                    sol: `INVERSA:<br>${ruleOfThree([['80 km/h', '5 h'], ['100 km/h', '? h']])}<br>Más velocidad → menos tiempo<br>80 × 5 = 100 × ?<br>400 ÷ 100 = <strong>4 horas</strong>`,
+                    hint: "💡 Más velocidad → menos tiempo (inversa). Haz: (80 × 5) ÷ 100"
+                },
+                { 
+                    q: "Un grifo llena una piscina en 12 horas. Si abrimos 2 grifos iguales, ¿cuánto tardarán?", 
+                    a: "6", 
+                    sol: `INVERSA:<br>${ruleOfThree([['1 grifo', '12 h'], ['2 grifos', '? h']])}<br>Más grifos → menos tiempo<br>1 × 12 = 2 × ?<br>12 ÷ 2 = <strong>6 horas</strong>`,
+                    hint: "💡 Más grifos → menos tiempo. Divide 12 entre 2"
+                }
+            ],
+            "2-1": [
+                { 
+                    q: "Calcula el 25% de 48000", 
+                    a: "12000", 
+                    sol: "Fórmula: (25 × 48000) ÷ 100<br>= 1200000 ÷ 100<br>= <strong>12000</strong>",
+                    hint: "💡 (25 × 48000) ÷ 100"
+                },
+                { 
+                    q: "¿Qué porcentaje es 12 de 240?", 
+                    a: "5", 
+                    sol: "Fórmula: (parte ÷ total) × 100<br>(12 ÷ 240) × 100<br>= 0,05 × 100<br>= <strong>5%</strong>",
+                    hint: "💡 Divide 12 entre 240 y multiplica por 100"
+                },
+                { 
+                    q: "Calcula el 15% de 200", 
+                    a: "30", 
+                    sol: "(15 × 200) ÷ 100<br>= 3000 ÷ 100<br>= <strong>30</strong>",
+                    hint: "💡 (15 × 200) ÷ 100"
+                }
+            ],
+            "2-2": [
+                { 
+                    q: "Un artículo de 60 € tiene un 30% de descuento. ¿Precio final?", 
+                    a: "42", 
+                    sol: "Paso 1: Descuento = (30 × 60) ÷ 100 = 18 €<br>Paso 2: Precio final = 60 − 18 = <strong>42 €</strong>",
+                    hint: "💡 Calcula 30% de 60, luego réstalo a 60"
+                },
+                { 
+                    q: "Un precio sube un 20%. Si costaba 50 €, ¿cuánto cuesta ahora?", 
+                    a: "60", 
+                    sol: "Paso 1: Aumento = (20 × 50) ÷ 100 = 10 €<br>Paso 2: Nuevo precio = 50 + 10 = <strong>60 €</strong>",
+                    hint: "💡 Calcula 20% de 50 y súmalo a 50"
+                },
+                { 
+                    q: "Una camisa de 40 € se rebaja un 25%. ¿Precio final?", 
+                    a: "30", 
+                    sol: "Descuento = (25 × 40) ÷ 100 = 10 €<br>Precio final = 40 − 10 = <strong>30 €</strong>",
+                    hint: "💡 Calcula 25% de 40 y réstalo"
+                }
+            ],
+            "3-1": [
+                { 
+                    q: `Calcula: ${frac('2','3')} + ${frac('1','6')}`, 
+                    a: "5/6", 
+                    sol: `Denominador común: 6<br>${frac('2','3')} = ${frac('4','6')}<br>${frac('4','6')} + ${frac('1','6')} = <strong>${frac('5','6')}</strong>`,
+                    hint: "💡 Convierte 2/3 a sextos: 2/3 = 4/6"
+                },
+                { 
+                    q: `Calcula: ${frac('1','2')} + ${frac('1','3')} + ${frac('1','6')}`, 
+                    a: "1", 
+                    sol: `Denominador común: 6<br>${frac('1','2')} = ${frac('3','6')}, ${frac('1','3')} = ${frac('2','6')}<br>${frac('3','6')} + ${frac('2','6')} + ${frac('1','6')} = ${frac('6','6')} = <strong>1</strong>`,
+                    hint: "💡 Convierte todo a sextos: 1/2=3/6, 1/3=2/6"
+                },
+                { 
+                    q: `Calcula: ${frac('3','4')} − ${frac('1','2')}`, 
+                    a: "1/4", 
+                    sol: `Denominador común: 4<br>${frac('1','2')} = ${frac('2','4')}<br>${frac('3','4')} − ${frac('2','4')} = <strong>${frac('1','4')}</strong>`,
+                    hint: "💡 Convierte 1/2 a cuartos: 1/2 = 2/4"
+                }
+            ],
+            "3-2": [
+                { 
+                    q: `Calcula: ${frac('3','4')} × ${frac('8','9')}`, 
+                    a: "2/3", 
+                    sol: `Multiplicar numeradores y denominadores:<br>${frac('3×8','4×9')} = ${frac('24','36')}<br>Simplificar: <strong>${frac('2','3')}</strong>`,
+                    hint: "💡 Multiplica: (3×8)/(4×9) y simplifica"
+                },
+                { 
+                    q: `Calcula: ${frac('5','6')} ÷ ${frac('2','3')}`, 
+                    a: "5/4", 
+                    sol: `Multiplicar por el inverso:<br>${frac('5','6')} × ${frac('3','2')} = ${frac('15','12')}<br>Simplificar: <strong>${frac('5','4')}</strong>`,
+                    hint: "💡 Da la vuelta a 2/3 y multiplica: 5/6 × 3/2"
+                },
+                { 
+                    q: `Calcula: ${frac('2','5')} × ${frac('10','4')}`, 
+                    a: "1", 
+                    sol: `${frac('2×10','5×4')} = ${frac('20','20')} = <strong>1</strong>`,
+                    hint: "💡 (2×10)/(5×4)"
+                }
+            ],
+            "4-1": [
+                { 
+                    q: "Calcula: 2³ × 2⁴", 
+                    a: "128", 
+                    sol: "Misma base → sumar exponentes:<br>2³⁺⁴ = 2⁷ = <strong>128</strong>",
+                    hint: "💡 Suma los exponentes: 3+4=7, luego 2⁷"
+                },
+                { 
+                    q: "Calcula: 3⁵ ÷ 3²", 
+                    a: "27", 
+                    sol: "Misma base → restar exponentes:<br>3⁵⁻² = 3³ = <strong>27</strong>",
+                    hint: "💡 Resta los exponentes: 5-2=3, luego 3³"
+                },
+                { 
+                    q: "Calcula: 5² × 5⁰", 
+                    a: "25", 
+                    sol: "5⁰ = 1<br>5² × 1 = <strong>25</strong>",
+                    hint: "💡 Recuerda: cualquier número elevado a 0 es 1"
+                }
+            ],
+            "4-2": [
+                { 
+                    q: "Calcula: 4⁻²", 
+                    a: "1/16", 
+                    sol: `Exponente negativo = inverso:<br>4⁻² = ${frac('1','4²')} = <strong>${frac('1','16')}</strong>`,
+                    hint: "💡 4⁻² = 1/(4²) = 1/16"
+                },
+                { 
+                    q: "Calcula: 2⁻³", 
+                    a: "1/8", 
+                    sol: `2⁻³ = ${frac('1','2³')} = <strong>${frac('1','8')}</strong>`,
+                    hint: "💡 2⁻³ = 1/(2³) = 1/8"
+                },
+                { 
+                    q: "Calcula: (−2)²", 
+                    a: "4", 
+                    sol: "(−2)² = (−2) × (−2) = <strong>4</strong>",
+                    hint: "💡 Menos por menos = más"
+                }
+            ]
+        };
+
+        const state = {
+            selectedBlock: null,
+            selectedLevel: null,
+            answers: {},
+            showResults: {},
+            showHints: {},
+            showExample: false,
+            statistics: JSON.parse(localStorage.getItem('mathStats') || '{}')
+        };
+
+        function saveState() {
+            localStorage.setItem('mathStats', JSON.stringify(state.statistics));
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase().replace(/\s/g, '').replace(/,/g, '.').replace(/€/g, '').replace(/euros/g, '');
+        }
+
+        function checkAnswer(key, correct) {
+            const userAnswer = normalizeAnswer(state.answers[key] || '');
+            const correctAnswer = normalizeAnswer(correct);
+            const isCorrect = userAnswer === correctAnswer;
+            
+            state.showResults[key] = { correct: isCorrect };
+            
+            const parts = key.split('-');
+            const statKey = parts[0] + '-' + parts[1];
+            
+            if (!state.statistics[statKey]) state.statistics[statKey] = { total: 0, correct: 0 };
+            state.statistics[statKey].total++;
+            if (isCorrect) state.statistics[statKey].correct++;
+            saveState();
+            render();
+        }
+
+        function toggleHint(key) {
+            state.showHints[key] = !state.showHints[key];
+            render();
+        }
+
+        function toggleExample() {
+            state.showExample = !state.showExample;
+            render();
+        }
+
+        function generateReport() {
+            let totalExercises = 0, totalCorrect = 0;
+            Object.entries(state.statistics).forEach(([key, stats]) => {
+                totalExercises += stats.total;
+                totalCorrect += stats.correct;
+            });
+            const percentage = totalExercises > 0 ? ((totalCorrect / totalExercises) * 100).toFixed(1) : 0;
+            return { totalExercises, totalCorrect, percentage };
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            const report = generateReport();
+            
+            app.innerHTML = `<div class="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 p-4">
+                <div class="max-w-7xl mx-auto">
+                    ${renderHeader(report)}
+                    ${renderContent()}
+                </div></div>`;
+        }
+
+        function renderHeader(report) {
+            return `<div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-2xl p-8 mb-8 text-white">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="text-6xl">📚</div>
+                        <div>
+                            <h1 class="text-4xl font-bold mb-2">Matemáticas 2º ESO</h1>
+                            <p class="text-blue-100 text-xl">Práctica con Explicaciones ✨</p>
+                        </div>
+                    </div>
+                    ${(state.selectedBlock || state.selectedLevel) ? '<button onclick="goHome()" class="bg-white text-blue-600 px-6 py-3 rounded-xl hover:bg-blue-50 transition shadow-lg font-bold text-lg">🏠 Volver al Inicio</button>' : ''}
+                </div>
+                ${report.totalExercises > 0 ? `<div class="flex gap-4 mt-6 flex-wrap">
+                    <div class="bg-green-500 px-6 py-3 rounded-xl shadow-lg">
+                        <span class="font-bold text-lg">✅ Correctos: ${report.totalCorrect}/${report.totalExercises}</span>
+                    </div>
+                    <div class="bg-yellow-400 px-6 py-3 rounded-xl shadow-lg">
+                        <span class="font-bold text-lg text-gray-800">📊 ${report.percentage}%</span>
+                    </div>
+                </div>` : ''}
+            </div>`;
+        }
+
+        function renderContent() {
+            if (!state.selectedBlock) return renderBlockSelection();
+            else if (!state.selectedLevel) return renderLevelSelection();
+            else return renderExercises();
+        }
+
+        function renderBlockSelection() {
+            return `<div>
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-xl mb-8 shadow-lg">
+                    <h3 class="font-bold text-xl text-yellow-900 mb-2">📢 Instrucciones</h3>
+                    <ol class="text-yellow-900 space-y-2 text-lg">
+                        <li>1️⃣ <strong>Elige un tema</strong> de los que aparecen abajo</li>
+                        <li>2️⃣ <strong>Selecciona un nivel</strong> (empieza por el nivel 1)</li>
+                        <li>3️⃣ <strong>Lee el ejemplo resuelto</strong> antes de empezar</li>
+                        <li>4️⃣ <strong>Resuelve los ejercicios</strong> - puedes pedir pistas</li>
+                        <li>5️⃣ <strong>Comprueba tu respuesta</strong> y aprende de la solución</li>
+                    </ol>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                    <span class="text-4xl">🎯</span> Elige un Tema
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    ${Object.entries(blocks).map(([id, block]) => `<div onclick="selectBlock('${id}')" class="bg-gradient-to-br ${block.color} rounded-3xl shadow-xl p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 text-white">
+                        <div class="text-6xl mb-4">${block.icon}</div>
+                        <h3 class="font-bold text-2xl mb-2">${block.title}</h3>
+                        <p class="text-white text-opacity-90 text-lg mb-4">${block.subtitle}</p>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-3 mb-4">
+                            <p class="text-sm">${block.explanation}</p>
+                        </div>
+                        <div class="flex items-center text-white font-bold text-lg">Empezar →</div>
+                    </div>`).join('')}
+                </div></div>`;
+        }
+
+        function renderLevelSelection() {
+            const block = blocks[state.selectedBlock];
+            const levelKey = state.selectedBlock + '-1';
+            const example = levelExamples[levelKey];
+            
+            const levelNames = {
+                '1': ['Nivel 1: Directa 🟢', 'Nivel 2: Inversa 🟡'],
+                '2': ['Nivel 1: Calcular % 🟢', 'Nivel 2: Descuentos 🟡'],
+                '3': ['Nivel 1: Sumar/Restar 🟢', 'Nivel 2: Multiplicar/Dividir 🟡'],
+                '4': ['Nivel 1: Multiplicar potencias 🟢', 'Nivel 2: Exp. negativos 🟡']
+            };
+            
+            return `<div>
+                <button onclick="backToBlocks()" class="mb-6 px-8 py-4 bg-white rounded-xl hover:bg-gray-50 transition shadow-lg font-bold text-lg">← Volver</button>
+                
+                <div class="bg-gradient-to-r ${block.color} rounded-3xl shadow-xl p-8 mb-8 text-white">
+                    <div class="text-6xl mb-4">${block.icon}</div>
+                    <h2 class="text-4xl font-bold mb-3">${block.title}</h2>
+                    <p class="text-xl text-white text-opacity-90">${block.explanation}</p>
+                </div>
+
+                ${example ? `<div class="example-box rounded-2xl p-8 mb-8 shadow-xl">
+                    <h3 class="font-bold text-2xl text-blue-900 mb-4 flex items-center gap-2">
+                        <span class="text-3xl">💡</span> ${example.title} - EJEMPLO RESUELTO
+                    </h3>
+                    <p class="text-blue-800 text-lg mb-4">${example.explanation}</p>
+                    <div class="bg-white rounded-xl p-6 mb-4">
+                        <p class="font-bold text-xl text-gray-800 mb-4">📝 ${example.example.problem}</p>
+                        <div class="space-y-3">
+                            ${example.example.steps.map(step => `<div class="step-box rounded-lg p-3">
+                                <p class="font-medium text-lg">${step}</p>
+                            </div>`).join('')}
+                        </div>
+                    </div>
+                </div>` : ''}
+
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Elige un Nivel:</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    ${(levelNames[state.selectedBlock] || []).map((levelName, idx) => {
+                        const levelId = String(idx + 1);
+                        const stats = state.statistics[state.selectedBlock + '-' + levelId] || { total: 0, correct: 0 };
+                        return `<div onclick="selectLevel('${levelId}')" class="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition-all border-4 border-transparent hover:border-blue-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="bg-gradient-to-r ${block.color} text-white px-6 py-2 rounded-full font-bold text-lg">
+                                    ${levelName}
+                                </span>
+                                ${stats.total > 0 ? `<span class="text-lg font-bold text-green-600">${stats.correct}/${stats.total} ✓</span>` : ''}
+                            </div>
+                            <p class="text-gray-600 text-lg">Haz clic para empezar</p>
+                        </div>`;
+                    }).join('')}
+                </div></div>`;
+        }
+
+        function renderExercises() {
+            const exercises = exerciseData[`${state.selectedBlock}-${state.selectedLevel}`] || [];
+            const levelKey = state.selectedBlock + '-' + state.selectedLevel;
+            const example = levelExamples[levelKey];
+            
+            return `<div>
+                <div class="flex gap-3 mb-6 flex-wrap">
+                    <button onclick="backToLevels()" class="px-6 py-3 bg-white rounded-xl shadow-lg hover:bg-gray-50 transition font-bold">← Niveles</button>
+                    <button onclick="goHome()" class="px-6 py-3 bg-white rounded-xl shadow-lg hover:bg-gray-50 transition font-bold">🏠 Inicio</button>
+                    ${example ? `<button onclick="toggleExample()" class="px-6 py-3 bg-blue-500 text-white rounded-xl shadow-lg hover:bg-blue-600 transition font-bold">
+                        ${state.showExample ? '🙈 Ocultar' : '💡 Ver'} Ejemplo
+                    </button>` : ''}
+                </div>
+
+                ${state.showExample && example ? `<div class="example-box rounded-2xl p-8 mb-8 shadow-xl">
+                    <h3 class="font-bold text-2xl text-blue-900 mb-4">💡 ${example.title}</h3>
+                    <p class="text-blue-800 text-lg mb-4">${example.explanation}</p>
+                    <div class="bg-white rounded-xl p-6">
+                        <p class="font-bold text-xl mb-4">📝 ${example.example.problem}</p>
+                        <div class="space-y-3">
+                            ${example.example.steps.map(step => `<div class="step-box rounded-lg p-3"><p class="font-medium text-lg">${step}</p></div>`).join('')}
+                        </div>
+                    </div>
+                </div>` : ''}
+
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-3">
+                        📚 Ejercicios
+                    </h2>
+                    <p class="text-gray-600 text-lg">Lee bien cada problema. Puedes pedir pistas si te atascas.</p>
+                </div>
+
+                <div class="space-y-8">
+                    ${exercises.map((ex, idx) => {
+                        const key = `${state.selectedBlock}-${state.selectedLevel}-${idx}`;
+                        const result = state.showResults[key];
+                        const showHint = state.showHints[key];
+                        return `<div class="bg-white border-4 ${result?.correct ? 'border-green-300' : 'border-gray-200'} rounded-2xl p-8 shadow-xl">
+                            <div class="flex items-start gap-4">
+                                <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-bold text-xl min-w-fit">
+                                    ${idx + 1}
+                                </span>
+                                <div class="flex-1">
+                                    <div class="text-2xl font-bold text-gray-800 mb-6 leading-relaxed">${ex.q}</div>
+                                    
+                                    <div class="flex gap-3 mb-4">
+                                        <input type="text" oninput="updateAnswer('${key}', this.value)" placeholder="Tu respuesta" 
+                                            class="flex-1 px-6 py-4 border-4 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none text-xl font-bold"
+                                            ${result ? 'disabled' : ''}>
+                                        <button onclick="checkAnswer('${key}', '${ex.a}')" 
+                                            class="px-10 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition font-bold text-xl shadow-lg"
+                                            ${result ? 'disabled style="opacity: 0.5;"' : ''}>
+                                            ✓ Comprobar
+                                        </button>
+                                    </div>
+
+                                    ${!result ? `<button onclick="toggleHint('${key}')" class="px-6 py-3 bg-yellow-400 text-gray-800 rounded-xl hover:bg-yellow-500 transition font-bold mb-4">
+                                        ${showHint ? '🙈 Ocultar Pista' : '💡 Ver Pista'}
+                                    </button>` : ''}
+
+                                    ${showHint && !result ? `<div class="hint-box rounded-xl p-6 mb-4">
+                                        <p class="font-bold text-lg text-yellow-900">${ex.hint}</p>
+                                    </div>` : ''}
+
+                                    ${result ? `<div class="mt-6 p-6 rounded-2xl ${result.correct ? 'bg-green-50 border-4 border-green-300' : 'bg-red-50 border-4 border-red-300'}">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <span class="text-4xl">${result.correct ? '🎉' : '❌'}</span>
+                                            <span class="font-bold text-2xl ${result.correct ? 'text-green-800' : 'text-red-800'}">
+                                                ${result.correct ? '¡CORRECTO!' : 'Incorrecto - Aprende de esto:'}
+                                            </span>
+                                        </div>
+                                        <div class="bg-white rounded-xl p-6">
+                                            <p class="font-bold text-lg text-gray-800 mb-2">📖 SOLUCIÓN:</p>
+                                            <p class="text-xl text-gray-700 leading-relaxed">${ex.sol}</p>
+                                        </div>
+                                    </div>` : ''}
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+        }
+
+        window.selectBlock = id => { state.selectedBlock = id; state.showExample = false; render(); };
+        window.selectLevel = id => { state.selectedLevel = id; state.showExample = false; render(); };
+        window.backToBlocks = () => { state.selectedBlock = null; state.selectedLevel = null; state.showExample = false; render(); };
+        window.backToLevels = () => { state.selectedLevel = null; state.showExample = false; render(); };
+        window.goHome = () => { state.selectedBlock = null; state.selectedLevel = null; state.showExample = false; render(); };
+        window.updateAnswer = (key, value) => { state.answers[key] = value; };
+        window.checkAnswer = checkAnswer;
+        window.toggleHint = toggleHint;
+        window.toggleExample = toggleExample;
+
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>
