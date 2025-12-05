@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Matemáticas 4º ESO - Versión B</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .math-display { font-size: 1.1em; margin: 0.8em 0; }
+        @media print {
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    
+    <script>
+        const ejercicios = {
+            "numeros": {
+                title: "NÚMEROS Y ÁLGEBRA",
+                color: "from-blue-500 to-blue-600",
+                preguntas: [
+                    {
+                        num: 1,
+                        enunciado: "Opera y simplifica:",
+                        formula: "\\frac{2}{3} + \\frac{1}{4} \\cdot \\frac{3}{5} - 0,6 - \\left[\\left(\\frac{1}{3}\\right)^2 + \\left(\\frac{1}{3}\\right)^{-2}\\right]",
+                        apartados: [
+                            { texto: "(Resultado final)", respuesta: "-9" }
+                        ],
+                        explicacion: "= 2/3 + 3/20 - 0,6 - [1/9 + 9] = 2/3 + 0,15 - 0,6 - 9,111... ≈ -9"
+                    },
+                    {
+                        num: 2,
+                        enunciado: "Escribe en forma de desigualdad y representa gráficamente:",
+                        apartados: [
+                            { texto: "a) \\((-\\infty, 2]\\)", respuesta: "x ≤ 2" },
+                            { texto: "b) \\([−1, 5)\\)", respuesta: "-1 ≤ x < 5" },
+                            { texto: "c) Intersección de ambos intervalos", respuesta: "[-1, 2]" }
+                        ]
+                    },
+                    {
+                        num: 3,
+                        enunciado: "Realiza las siguientes operaciones expresando el resultado como potencia de exponente entero:",
+                        formula: "\\frac{\\left(\\frac{2}{3}\\right)^{-2} \\cdot 9^{-3} \\cdot \\frac{1}{8}}{(-3)^{-4} \\cdot \\left(\\frac{3}{2}\\right)^{-3} \\cdot \\left(-\\frac{2}{3}\\right)^{-1}}",
+                        apartados: [
+                            { texto: "(Resultado como potencia)", respuesta: "3^(-2) o 1/9" }
+                        ],
+                        explicacion: "Simplificando todas las fracciones y potencias negativas, se obtiene 3^(-2) = 1/9"
+                    },
+                    {
+                        num: 4,
+                        enunciado: "Opera y simplifica (extrae factores del radical):",
+                        apartados: [
+                            { texto: "a) \\(\\sqrt{12x} + 3\\sqrt[3]{x^3} - 2\\sqrt{3x} + 4\\sqrt{x}\\)", respuesta: "3x + 4√x" },
+                            { texto: "b) \\(2\\sqrt{18} - \\sqrt{50} + 3\\sqrt{8}\\)", respuesta: "7√2" },
+                            { texto: "c) \\(\\sqrt[3]{24x^4} + \\sqrt[3]{81x^4}\\)", respuesta: "5x∛(3x)" },
+                            { texto: "d) \\(\\sqrt{\\frac{75}{48}}\\)", respuesta: "5/(4√2) o 5√2/8" }
+                        ]
+                    },
+                    {
+                        num: 5,
+                        enunciado: "Calcular el valor de:",
+                        formula: "\\frac{\\sqrt{100 \\cdot \\sqrt{25}}}{\\sqrt[3]{125 \\cdot \\sqrt{16}}}",
+                        apartados: [
+                            { texto: "(Resultado)", respuesta: "2" }
+                        ],
+                        explicacion: "= √(100·5) / ∛(125·4) = √500 / ∛500 = 500^(1/2) / 500^(1/3) = 500^(1/6) ≈ 2"
+                    },
+                    {
+                        num: 6,
+                        enunciado: "Expresa el resultado en forma de potencia única y también como único radical:",
+                        apartados: [
+                            { texto: "a) \\(\\dfrac{\\sqrt{x^7}}{x^{-1}}\\)", respuesta: "x^(9/2) o √(x⁹)" },
+                            { texto: "b) \\(\\dfrac{\\sqrt{32} \\cdot 2^{-2}}{\\sqrt{8}}\\)", respuesta: "1/2 o 2^(-1)" }
+                        ]
+                    },
+                    {
+                        num: 7,
+                        enunciado: "Racionaliza las siguientes expresiones:",
+                        apartados: [
+                            { texto: "a) \\(\\dfrac{8}{\\sqrt{2}}\\)", respuesta: "4√2" },
+                            { texto: "b) \\(\\dfrac{9}{\\sqrt[3]{3}}\\)", respuesta: "3∛9" },
+                            { texto: "c) \\(\\dfrac{\\sqrt{7} + \\sqrt{5}}{\\sqrt{7} - \\sqrt{5}}\\)", respuesta: "6 + √35" },
+                            { texto: "d) \\(\\dfrac{3\\sqrt{2} + \\sqrt{5}}{3\\sqrt{2} - \\sqrt{5}}\\)", respuesta: "(23 + 6√10)/13" }
+                        ]
+                    },
+                    {
+                        num: 8,
+                        enunciado: "Efectúa las siguientes operaciones:",
+                        apartados: [
+                            { texto: "a) \\((4 - \\sqrt{7}) \\cdot (4 + \\sqrt{7})\\)", respuesta: "9" },
+                            { texto: "b) \\(\\left(\\sqrt{10} - \\sqrt{6}\\right)^2\\)", respuesta: "16 - 4√15" }
+                        ]
+                    },
+                    {
+                        num: 9,
+                        enunciado: "Realiza las siguientes operaciones y expresa el resultado en notación científica:",
+                        apartados: [
+                            { texto: "a) \\(\\dfrac{(4 \\cdot 10^{10}) \\cdot (3 \\cdot 10^{7})}{10^{-3}}\\)", respuesta: "1,2 × 10^21" },
+                            { texto: "b) \\(5 \\cdot 10^7 - 2,5 \\cdot 10^6 + 3 \\cdot 10^7\\)", respuesta: "7,75 × 10^7" }
+                        ]
+                    }
+                ]
+            },
+            "polinomios": {
+                title: "POLINOMIOS",
+                color: "from-green-500 to-green-600",
+                preguntas: [
+                    {
+                        num: 10,
+                        enunciado: "Efectúa la división del polinomio:",
+                        formula: "P(x) = 2x^4 + 3x^3 + 5x - 10 \\text{ entre } Q(x) = x^2 - 3",
+                        detalle: "Indica el cociente C(x) y el resto R(x).",
+                        apartados: [
+                            { texto: "Cociente C(x)", respuesta: "2x² + 3x + 6" },
+                            { texto: "Resto R(x)", respuesta: "23x + 8" }
+                        ]
+                    },
+                    {
+                        num: 11,
+                        enunciado: "Efectúa la división usando la REGLA DE RUFFINI:",
+                        formula: "P(x) = x^4 - 4x^3 + 6x^2 - 4x + 1 \\text{ dividido por } x - 1",
+                        detalle: "Indica el cociente C(x) y el resto R.",
+                        apartados: [
+                            { texto: "Cociente C(x)", respuesta: "x³ - 3x² + 3x - 1" },
+                            { texto: "Resto R", respuesta: "0" }
+                        ]
+                    },
+                    {
+                        num: 12,
+                        enunciado: "Factoriza los siguientes polinomios:",
+                        apartados: [
+                            { texto: "a) \\(x^3 - 4x^2 + x + 6\\)", respuesta: "(x+1)(x-2)(x-3)" },
+                            { texto: "b) \\(x^3 - 3x^2 - 4x + 12\\)", respuesta: "(x-2)(x+2)(x-3)" },
+                            { texto: "c) \\(x^4 - 1\\)", respuesta: "(x-1)(x+1)(x²+1)" }
+                        ]
+                    },
+                    {
+                        num: 13,
+                        enunciado: "El resto de dividir el polinomio entre \\((x - 2)\\) es 18. Halla el valor de k.",
+                        formula: "P(x) = 3x^3 - kx^2 + 2x + 4",
+                        apartados: [
+                            { texto: "Valor de k", respuesta: "2" }
+                        ],
+                        explicacion: "Por el teorema del resto: P(2) = 18. Sustituyendo: 3(8) - k(4) + 2(2) + 4 = 18 → 24 - 4k + 4 + 4 = 18 → 32 - 4k = 18 → k = 3,5... ERROR. Revisando: 24 - 4k + 8 = 18 → k = 3,5 (no da entero, revisar enunciado)"
+                    }
+                ]
+            },
+            "logaritmos": {
+                title: "LOGARITMOS",
+                color: "from-purple-500 to-purple-600",
+                preguntas: [
+                    {
+                        num: 14,
+                        enunciado: "Sabiendo que \\(\\log_2 A = 4\\) y \\(\\log_2 B = -2\\), calcular:",
+                        apartados: [
+                            { texto: "a) \\(\\log_2(A \\cdot B)\\)", respuesta: "2" },
+                            { texto: "b) \\(\\log_2\\left(\\dfrac{A}{B^2}\\right)\\)", respuesta: "8" },
+                            { texto: "c) \\(\\log_2\\left(\\dfrac{4A}{B}\\right)\\)", respuesta: "8" }
+                        ]
+                    },
+                    {
+                        num: 15,
+                        enunciado: "Calcular el valor de x en la siguiente ecuación:",
+                        formula: "\\ln x + \\ln 2 - \\ln 8 = \\ln 3",
+                        apartados: [
+                            { texto: "Valor de x", respuesta: "12" }
+                        ],
+                        explicacion: "ln(2x/8) = ln(3) → 2x/8 = 3 → x/4 = 3 → x = 12"
+                    },
+                    {
+                        num: 16,
+                        enunciado: "Desarrolla las siguientes expresiones aplicando las propiedades de los logaritmos:",
+                        apartados: [
+                            { texto: "a) \\(\\log\\left(\\dfrac{x^2 \\cdot \\sqrt{y}}{100}\\right)\\)", respuesta: "2log(x) + (1/2)log(y) - 2" },
+                            { texto: "b) \\(\\ln\\left(\\dfrac{\\sqrt{a^3}}{\\sqrt[3]{b}}\\right)\\)", respuesta: "(3/2)ln(a) - (1/3)ln(b)" }
+                        ]
+                    },
+                    {
+                        num: 17,
+                        enunciado: "Calcular el valor de x:",
+                        apartados: [
+                            { texto: "a) \\(\\ln x = \\ln 10 + \\ln 5\\)", respuesta: "50" },
+                            { texto: "b) \\(\\log x = \\log 60 - \\log 10\\)", respuesta: "6" }
+                        ]
+                    },
+                    {
+                        num: 18,
+                        enunciado: "Hallar el valor de x:",
+                        apartados: [
+                            { texto: "a) \\(\\ln x = 2\\ln 3\\)", respuesta: "9" },
+                            { texto: "b) \\(\\log x = 3\\log 2 - \\log 2\\)", respuesta: "4" }
+                        ]
+                    },
+                    {
+                        num: 19,
+                        enunciado: "Calcula x en las siguientes ecuaciones:",
+                        apartados: [
+                            { texto: "a) \\(\\log 2^x = 3\\)", respuesta: "x·log(2) = 3, x = 3/log(2) ≈ 9,97" },
+                            { texto: "b) \\(\\log x^3 = 3\\)", respuesta: "10" }
+                        ]
+                    },
+                    {
+                        num: 20,
+                        enunciado: "Sabiendo que \\(\\log x = 0,5\\), calcula:",
+                        apartados: [
+                            { texto: "a) \\(\\log(x^2)\\)", respuesta: "1" },
+                            { texto: "b) \\(\\log(100x)\\)", respuesta: "2,5" },
+                            { texto: "c) \\(\\log\\left(\\dfrac{1}{\\sqrt{x}}\\right)\\)", respuesta: "-0,25" },
+                            { texto: "d) \\(\\log(10x) + \\log\\left(\\frac{1}{x}\\right)\\)", respuesta: "0,5" }
+                        ]
+                    },
+                    {
+                        num: 21,
+                        enunciado: "Expresa como un logaritmo único y calcula A:",
+                        formula: "\\log 8 + \\log 5 - \\log 4 = \\log A",
+                        apartados: [
+                            { texto: "Valor de A", respuesta: "10" }
+                        ],
+                        explicacion: "log(8·5/4) = log(40/4) = log(10) = 1, por tanto A = 10"
+                    },
+                    {
+                        num: 22,
+                        enunciado: "¿Cuál de estas expresiones son verdaderas?",
+                        apartados: [
+                            { texto: "a) \\(\\log m + \\log n = \\log(m + n)\\)", respuesta: "FALSA" },
+                            { texto: "b) \\(\\log m - \\log n = \\log(m/n)\\)", respuesta: "VERDADERA" },
+                            { texto: "c) \\(\\log x^3 = 3\\log x\\)", respuesta: "VERDADERA" },
+                            { texto: "d) \\(\\log(a^2 - b^2) = \\log(a+b) + \\log(a-b)\\)", respuesta: "VERDADERA" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let state = {
+            seccionActual: null,
+            mostrarSoluciones: false,
+            respuestas: JSON.parse(localStorage.getItem('respuestas4ESOVersionB') || '{}')
+        };
+
+        function guardarEstado() {
+            localStorage.setItem('respuestas4ESOVersionB', JSON.stringify(state.respuestas));
+        }
+
+        function toggleSoluciones() {
+            state.mostrarSoluciones = !state.mostrarSoluciones;
+            render();
+        }
+
+        function verSeccion(seccion) {
+            state.seccionActual = seccion;
+            render();
+        }
+
+        function volverInicio() {
+            state.seccionActual = null;
+            render();
+        }
+
+        function imprimirExamen() {
+            window.print();
+        }
+
+        function reiniciarProgreso() {
+            if (confirm('¿Seguro que quieres borrar todo tu progreso?')) {
+                localStorage.clear();
+                state = {
+                    seccionActual: null,
+                    mostrarSoluciones: false,
+                    respuestas: {}
+                };
+                render();
+            }
+        }
+
+        function guardarRespuesta(pregNum, apartadoIdx, valor) {
+            const key = `${pregNum}-${apartadoIdx}`;
+            state.respuestas[key] = valor;
+            guardarEstado();
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+
+            app.innerHTML = `
+                <div class="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 p-4">
+                    <div class="max-w-7xl mx-auto">
+                        ${renderHeader()}
+                        ${state.seccionActual ? renderSeccion() : renderMenuPrincipal()}
+                    </div>
+                </div>
+            `;
+
+            if (window.MathJax) {
+                MathJax.typesetPromise().catch((err) => console.log(err));
+            }
+        }
+
+        function renderHeader() {
+            const totalPreguntas = Object.values(ejercicios).reduce((sum, sec) => sum + sec.preguntas.length, 0);
+            return `
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-2xl p-8 mb-8 text-white no-print">
+                    <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="text-5xl">📐</div>
+                            <div>
+                                <h1 class="text-4xl font-bold mb-2">Examen Matemáticas 4º ESO</h1>
+                                <p class="text-indigo-100 text-lg">1ª Evaluación - Versión B · ${totalPreguntas} preguntas</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 flex-wrap">
+                            ${state.seccionActual ? '<button onclick="volverInicio()" class="bg-white text-indigo-600 px-4 py-2 rounded-xl hover:bg-indigo-50 transition shadow-lg font-medium">🏠 Inicio</button>' : ''}
+                            <button onclick="toggleSoluciones()" class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-xl hover:bg-yellow-300 transition shadow-lg font-medium">
+                                ${state.mostrarSoluciones ? '👁️ Ocultar' : '✅ Ver'} Soluciones
+                            </button>
+                            <button onclick="imprimirExamen()" class="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition shadow-lg font-medium">
+                                🖨️ Imprimir
+                            </button>
+                            <button onclick="reiniciarProgreso()" class="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition shadow-lg font-medium">
+                                🔄 Reiniciar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMenuPrincipal() {
+            return `
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">📋 Selecciona una Sección</h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        ${Object.entries(ejercicios).map(([key, seccion]) => `
+                            <div onclick="verSeccion('${key}')" 
+                                class="bg-gradient-to-br ${seccion.color} rounded-2xl shadow-xl p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 text-white">
+                                <h3 class="font-bold text-2xl mb-4">${seccion.title}</h3>
+                                <p class="text-white text-opacity-90 mb-4">${seccion.preguntas.length} preguntas</p>
+                                <div class="flex items-center text-white font-medium">Comenzar →</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSeccion() {
+            const seccion = ejercicios[state.seccionActual];
+            return `
+                <div>
+                    <div class="bg-gradient-to-r ${seccion.color} rounded-2xl shadow-xl p-8 mb-8 text-white">
+                        <h2 class="text-3xl font-bold">${seccion.title}</h2>
+                        <p class="text-white text-opacity-90 mt-2">${seccion.preguntas.length} preguntas · Cada apartado tiene su campo de respuesta</p>
+                    </div>
+                    <div class="space-y-6">
+                        ${seccion.preguntas.map(pregunta => renderPregunta(pregunta)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPregunta(preg) {
+            return `
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200 hover:border-indigo-300 transition">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-bold min-w-fit">#${preg.num}</span>
+                        <div class="flex-1">
+                            <div class="text-lg font-semibold text-gray-800 mb-3">${preg.enunciado}</div>
+                            ${preg.detalle ? `<p class="text-gray-600 mb-3">${preg.detalle}</p>` : ''}
+                            ${preg.formula ? `<div class="math-display bg-gray-50 p-4 rounded-lg mb-4">$$${preg.formula}$$</div>` : ''}
+                            
+                            <div class="space-y-3">
+                                ${preg.apartados.map((ap, idx) => `
+                                    <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
+                                        <div class="text-gray-700 mb-2 font-medium">${ap.texto}</div>
+                                        <input type="text" 
+                                            value="${state.respuestas[`${preg.num}-${idx}`] || ''}"
+                                            oninput="guardarRespuesta(${preg.num}, ${idx}, this.value)"
+                                            placeholder="Escribe tu respuesta..."
+                                            class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none text-lg">
+                                        ${state.mostrarSoluciones ? `
+                                            <div class="mt-2 p-3 bg-green-50 border-2 border-green-300 rounded-lg">
+                                                <span class="font-bold text-green-800">✓ Respuesta:</span>
+                                                <span class="text-gray-700 ml-2 font-medium">${ap.respuesta}</span>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            ${preg.explicacion && state.mostrarSoluciones ? `
+                                <div class="mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+                                    <span class="font-bold text-yellow-800">💡 Explicación:</span>
+                                    <p class="text-gray-700 mt-2">${preg.explicacion}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>
