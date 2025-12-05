@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemáticas 2º ESO - Problemas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const blocks = {
+            1: { title: "PROPORCIONALIDAD COMPUESTA", icon: "⚖️", color: "from-blue-500 to-blue-600" },
+            2: { title: "PORCENTAJES", icon: "💯", color: "from-purple-500 to-purple-600" },
+            3: { title: "REPARTOS PROPORCIONALES", icon: "🎂", color: "from-pink-500 to-pink-600" },
+            4: { title: "PROBLEMAS CON FRACCIONES", icon: "🧮", color: "from-green-500 to-green-600" }
+        };
+
+        const levelNames = {
+            "1": { "1.1": "Directa + Directa", "1.2": "Mixta (directa + inversa)" },
+            "2": { "2.1": "Calcular Precio Final", "2.2": "Calcular Precio Inicial", "2.3": "Calcular Porcentaje" },
+            "3": { "3.1": "Reparto Directo", "3.2": "Reparto Inverso" },
+            "4": { "4.1": "Problemas con Fracciones" }
+        };
+
+        const exerciseData = {
+            "1-1.1": [
+                { q: "6 máquinas fabrican 120 piezas en 5 horas. ¿Cuántas piezas fabricarán 9 máquinas en 8 horas?", a: "288", sol: "Más máquinas y más horas → más piezas (ambas DIRECTAS). Calcula: (9÷6)×(8÷5)×120 = 1,5×1,6×120 = 288 piezas" },
+                { q: "4 pintores pintan 80 m² en 3 días. ¿Cuántos m² pintarán 6 pintores en 5 días?", a: "200", sol: "Ambas DIRECTAS: (6÷4)×(5÷3)×80 = 1,5×1,67×80 = 200 m²" },
+                { q: "5 grifos llenan 200 litros en 4 minutos. ¿Cuántos litros llenan 8 grifos en 6 minutos?", a: "480", sol: "Ambas DIRECTAS: (8÷5)×(6÷4)×200 = 1,6×1,5×200 = 480 litros" }
+            ],
+            "1-1.2": [
+                { q: "6 obreros construyen un muro en 12 días trabajando 8 horas diarias. ¿Cuántos días tardarán 8 obreros trabajando 6 horas diarias?", a: "12", sol: "Más obreros→menos días (INVERSA): 6÷8=0,75. Menos horas→más días (INVERSA): 8÷6=1,33. Total: 12×0,75×1,33 = 12 días" },
+                { q: "3 grifos llenan un depósito en 10 horas. ¿Cuánto tardarán 5 grifos?", a: "6", sol: "INVERSA: 3×10 = 5×? → 30÷5 = 6 horas" },
+                { q: "12 trabajadores terminan en 15 días trabajando 6 horas diarias. ¿Cuántos días tardarán 10 trabajadores trabajando 9 horas diarias?", a: "12", sol: "Menos trabajadores (INVERSA): 12÷10=1,2. Más horas (INVERSA): 6÷9=0,67. Total: 15×1,2×0,67 = 12 días" }
+            ],
+            "2-2.1": [
+                { q: "Un televisor cuesta 500€. Le aplican un 15% de descuento. ¿Precio final?", a: "425", sol: "Descuento: (15×500)÷100 = 75€. Precio final: 500−75 = 425€" },
+                { q: "Un salario de 1200€ sube un 8%. ¿Nuevo salario?", a: "1296", sol: "Aumento: (8×1200)÷100 = 96€. Nuevo salario: 1200+96 = 1296€" },
+                { q: "Unas zapatillas de 80€ se rebajan un 35%. ¿Precio rebajado?", a: "52", sol: "Descuento: (35×80)÷100 = 28€. Precio final: 80−28 = 52€" }
+            ],
+            "2-2.2": [
+                { q: "Después de un 20% de descuento, pagué 120€. ¿Precio original?", a: "150", sol: "Con 20% descuento pagué el 80%. Si 80%=120€, entonces 100%=(120×100)÷80 = 150€" },
+                { q: "Con un 25% de aumento, ahora gano 1500€. ¿Cuánto ganaba antes?", a: "1200", sol: "Ahora tengo el 125% (100%+25%). Si 125%=1500€, entonces 100%=(1500×100)÷125 = 1200€" },
+                { q: "Tras un 15% de descuento, compré una bici por 340€. ¿Precio sin descuento?", a: "400", sol: "Pagué el 85% (100%−15%). Si 85%=340€, entonces 100%=(340×100)÷85 = 400€" }
+            ],
+            "2-2.3": [
+                { q: "Un artículo costaba 200€ y ahora cuesta 160€. ¿Qué % de descuento?", a: "20", sol: "Descuento: 200−160 = 40€. Porcentaje: (40÷200)×100 = 20%" },
+                { q: "Mi sueldo era 1000€ y ahora es 1100€. ¿Qué % subió?", a: "10", sol: "Aumento: 1100−1000 = 100€. Porcentaje: (100÷1000)×100 = 10%" },
+                { q: "Compré algo por 90€ y lo vendí por 108€. ¿Qué % gané?", a: "20", sol: "Ganancia: 108−90 = 18€. Porcentaje: (18÷90)×100 = 20%" }
+            ],
+            "3-3.1": [
+                { q: "Ana pone 300€, Berta 500€ y Carlos 700€ en un negocio. Si ganan 900€, ¿cuánto recibe cada uno?", a: "180,300,420", sol: "Total: 1500€. Valor: 900÷1500=0,6€/€. Ana: 300×0,6=180€. Berta: 500×0,6=300€. Carlos: 700×0,6=420€" },
+                { q: "Dos hermanos heredan 15000€ proporcionalmente a sus edades: 20 y 30 años. ¿Cuánto recibe cada uno?", a: "6000,9000", sol: "Total edades: 50. Valor: 15000÷50=300€/año. Primero: 20×300=6000€. Segundo: 30×300=9000€" },
+                { q: "Repartir 480€ entre 3 personas proporcionalmente a 2, 3 y 5. ¿Cuánto recibe cada una?", a: "96,144,240", sol: "Total partes: 10. Valor: 480÷10=48€/parte. Primera: 2×48=96€. Segunda: 3×48=144€. Tercera: 5×48=240€" }
+            ],
+            "3-3.2": [
+                { q: "Repartir 360€ inversamente proporcional a 2, 3 y 6. ¿Cuánto recibe cada uno?", a: "180,120,60", sol: "Inversos equivalen a 3,2,1. Total: 6 partes. Valor: 60€/parte. Primero: 3×60=180€. Segundo: 2×60=120€. Tercero: 1×60=60€. Quien tiene menor número (2) recibe MÁS (180€)" },
+                { q: "Tres trabajadores se reparten 240€ inversamente a las faltas: 2, 3 y 4 faltas. ¿Cuánto recibe cada uno?", a: "111,74,55", sol: "Inversos: 6,4,3. Total: 13 partes. Primero (2 faltas): (6÷13)×240=111€. Segundo (3 faltas): (4÷13)×240=74€. Tercero (4 faltas): (3÷13)×240=55€" }
+            ],
+            "4-4.1": [
+                { q: "Gasto 1/4 de mi dinero en comida y 2/3 de lo que queda en transporte. Me sobran 9€. ¿Cuánto tenía?", a: "36", sol: "Después de comida queda 3/4. Gasto en transporte: (2/3)×(3/4)=1/2. Me queda: 3/4−1/2=1/4. Si 1/4=9, entonces total=36€" },
+                { q: "El lunes gasto 1/3 de mi dinero. El martes 1/2 de lo que me queda. Me sobran 20€. ¿Cuánto tenía?", a: "60", sol: "Después del lunes queda 2/3. Gasto el martes: (1/2)×(2/3)=1/3. Me queda: 2/3−1/3=1/3. Si 1/3=20, entonces total=60€" },
+                { q: "Un depósito pierde 1/5 por evaporación. Luego se consumen 3/4 de lo que queda. Quedan 40 litros. ¿Capacidad inicial?", a: "200", sol: "Después de evaporación queda 4/5. Se consumen: (3/4)×(4/5)=3/5. Quedan: 4/5−3/5=1/5. Si 1/5=40, entonces total=200 litros" },
+                { q: "En una clase, 2/5 son chicas. De las chicas, 3/4 llevan gafas. Si 12 chicas llevan gafas, ¿cuántos alumnos hay?", a: "40", sol: "Chicas con gafas = (3/4)×(2/5) = 3/10 del total. Si 3/10=12, entonces total=40 alumnos" },
+                { q: "Leo 1/3 de un libro el primer día y 1/4 el segundo día. Me faltan 100 páginas. ¿Páginas del libro?", a: "240", sol: "Leo en total: 1/3+1/4=7/12. Me falta: 1−7/12=5/12. Si 5/12=100, entonces total=240 páginas" }
+            ]
+        };
+
+        let state = {
+            selectedBlock: null,
+            selectedLevel: null,
+            answers: {},
+            showResults: {}
+        };
+
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase().replace(/\s/g, '').replace(/,/g, '.').replace(/€/g, '');
+        }
+
+        function checkAnswer(key, correct) {
+            const userAnswer = normalizeAnswer(state.answers[key] || '');
+            const correctAnswer = normalizeAnswer(correct);
+            state.showResults[key] = userAnswer === correctAnswer;
+            render();
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.selectedBlock) {
+                app.innerHTML = renderBlockSelection();
+            } else if (!state.selectedLevel) {
+                app.innerHTML = renderLevelSelection();
+            } else {
+                app.innerHTML = renderExercises();
+            }
+        }
+
+        function renderBlockSelection() {
+            return `<div class="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 p-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-2xl p-8 mb-8 text-white">
+                        <h1 class="text-4xl font-bold mb-2">📚 Matemáticas 2º ESO</h1>
+                        <p class="text-blue-100 text-xl">Problemas con Explicaciones</p>
+                    </div>
+                    
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">🎯 Elige un Tipo de Problema</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        ${Object.entries(blocks).map(([id, block]) => `
+                            <div onclick="selectBlock('${id}')" class="bg-gradient-to-br ${block.color} rounded-3xl shadow-xl p-8 cursor-pointer transform transition-all hover:scale-105 text-white">
+                                <div class="text-6xl mb-4">${block.icon}</div>
+                                <h3 class="font-bold text-2xl mb-3">${block.title}</h3>
+                                <div class="flex items-center text-white font-bold text-lg">Empezar →</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderLevelSelection() {
+            const block = blocks[state.selectedBlock];
+            return `<div class="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 p-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-2xl p-8 mb-8 text-white">
+                        <h1 class="text-4xl font-bold mb-2">📚 Matemáticas 2º ESO</h1>
+                        <button onclick="backToBlocks()" class="mt-4 bg-white text-blue-600 px-6 py-3 rounded-xl font-bold">← Volver</button>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r ${block.color} rounded-3xl shadow-xl p-8 mb-8 text-white">
+                        <div class="text-6xl mb-4">${block.icon}</div>
+                        <h2 class="text-3xl font-bold">${block.title}</h2>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Elige un Nivel:</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        ${Object.entries(levelNames[state.selectedBlock] || {}).map(([levelId, levelName]) => `
+                            <div onclick="selectLevel('${levelId}')" class="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition-all">
+                                <span class="bg-gradient-to-r ${block.color} text-white px-6 py-2 rounded-full font-bold text-lg">
+                                    Nivel ${levelId}: ${levelName}
+                                </span>
+                                <p class="text-gray-600 mt-4">Haz clic para empezar</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderExercises() {
+            const exercises = exerciseData[`${state.selectedBlock}-${state.selectedLevel}`] || [];
+            return `<div class="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 p-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-2xl p-8 mb-8 text-white">
+                        <h1 class="text-4xl font-bold mb-2">📚 Matemáticas 2º ESO</h1>
+                        <div class="flex gap-3 mt-4">
+                            <button onclick="backToLevels()" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold">← Niveles</button>
+                            <button onclick="backToBlocks()" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold">🏠 Inicio</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800">📚 Ejercicios</h2>
+                    </div>
+
+                    <div class="space-y-8">
+                        ${exercises.map((ex, idx) => {
+                            const key = `${state.selectedBlock}-${state.selectedLevel}-${idx}`;
+                            const result = state.showResults[key];
+                            return `<div class="bg-white border-4 ${result !== undefined ? (result ? 'border-green-300' : 'border-red-300') : 'border-gray-200'} rounded-2xl p-8 shadow-xl">
+                                <div class="flex items-start gap-4">
+                                    <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-bold text-xl">
+                                        ${idx + 1}
+                                    </span>
+                                    <div class="flex-1">
+                                        <div class="text-2xl font-bold text-gray-800 mb-6">${ex.q}</div>
+                                        
+                                        <div class="flex gap-3 mb-4">
+                                            <input type="text" id="answer-${key}" placeholder="Tu respuesta" 
+                                                class="flex-1 px-6 py-4 border-4 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none text-xl"
+                                                ${result !== undefined ? 'disabled' : ''}>
+                                            <button onclick="checkAnswer('${key}', '${ex.a}')" 
+                                                class="px-10 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 font-bold text-xl"
+                                                ${result !== undefined ? 'disabled style="opacity: 0.5;"' : ''}>
+                                                ✓ Comprobar
+                                            </button>
+                                        </div>
+
+                                        ${result !== undefined ? `<div class="mt-6 p-6 rounded-2xl ${result ? 'bg-green-50 border-4 border-green-300' : 'bg-red-50 border-4 border-red-300'}">
+                                            <div class="flex items-center gap-3 mb-4">
+                                                <span class="text-4xl">${result ? '🎉' : '❌'}</span>
+                                                <span class="font-bold text-2xl ${result ? 'text-green-800' : 'text-red-800'}">
+                                                    ${result ? '¡CORRECTO!' : 'Incorrecto - Aprende:'}
+                                                </span>
+                                            </div>
+                                            <div class="bg-white rounded-xl p-6">
+                                                <p class="font-bold text-lg text-gray-800 mb-2">📖 SOLUCIÓN:</p>
+                                                <p class="text-xl text-gray-700">${ex.sol}</p>
+                                            </div>
+                                        </div>` : ''}
+                                    </div>
+                                </div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        window.selectBlock = function(id) {
+            state.selectedBlock = id;
+            render();
+        };
+
+        window.selectLevel = function(id) {
+            state.selectedLevel = id;
+            render();
+        };
+
+        window.backToBlocks = function() {
+            state.selectedBlock = null;
+            state.selectedLevel = null;
+            render();
+        };
+
+        window.backToLevels = function() {
+            state.selectedLevel = null;
+            render();
+        };
+
+        window.checkAnswer = function(key, correct) {
+            const input = document.getElementById('answer-' + key);
+            if (input) {
+                state.answers[key] = input.value;
+            }
+            const userAnswer = normalizeAnswer(state.answers[key] || '');
+            const correctAnswer = normalizeAnswer(correct);
+            state.showResults[key] = userAnswer === correctAnswer;
+            render();
+        };
+
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>
